@@ -12,7 +12,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Building the Maven application...'
+                echo 'Building Maven application...'
                 sh 'mvn clean package -DskipTests'
             }
         }
@@ -23,11 +23,25 @@ pipeline {
                 sh 'mvn test'
             }
         }
+
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube analysis...'
+
+                withSonarQubeEnv('sonarqube') {
+                    sh '''
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=scouter \
+                        -Dsonar.projectName=scouter
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo '✅ Checkout, Build and Test completed successfully!'
+            echo '✅ Checkout, Build, Test and SonarQube completed successfully!'
         }
 
         failure {
