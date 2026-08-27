@@ -12,25 +12,19 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Building Scouter application...'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
+                echo 'Building the Maven application...'
+                sh 'mvn clean package -DskipTests'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo '✅ Checkout and Build completed successfully!'
         }
 
         failure {
-            echo 'Pipeline failed!.'
-            
+            echo '❌ Pipeline failed!'
         }
     }
 }
