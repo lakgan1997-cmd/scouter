@@ -16,19 +16,16 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    // This loads the tool you configured in Global Tool Configuration
-                    def scannerHome = tool name: "${SONAR_SCANNER}"
-                    
-                    withSonarQubeEnv("${SONAR_SERVER}") {
-                        // Executes the scanner using the installed tool's path
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
-                }
+       stage('SonarQube Analysis') {
+    steps {
+        script {
+            def scannerHome = tool name: "${SONAR_SCANNER}"
+            withSonarQubeEnv("${SONAR_SERVER}") {
+                sh "${scannerHome}/bin/sonar-scanner"
             }
         }
+    }
+}
 
         stage('Build') {
             steps {
