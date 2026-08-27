@@ -1,12 +1,31 @@
 pipeline {
     agent any
 
-    stages {
+    environment {
+        // Name of the SonarQube server configured in Jenkins under:
+        // Manage Jenkins -> System -> SonarQube servers
+        SONAR_SERVER = 'SonarQube'
+        // Name of the SonarQube Scanner tool configured under:
+        // Manage Jenkins -> Global Tool Configuration -> SonarQube Scanner
+        SONAR_SCANNER = 'SonarQubeScanner'
+    }
 
+    stages {
         stage('Checkout') {
             steps {
                 echo 'Checking out code from GitHub...'
                 checkout scm
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool name: "${SONAR_SCANNER}"
+                    withSonarQubeEnv("${SONAR_SERVER}") {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
             }
         }
 
@@ -29,7 +48,7 @@ pipeline {
         }
 
         failure {
-            echo 'Pipeline failed!.'
+            echo 'Pipeline failed!'
         }
     }
 }
