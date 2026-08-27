@@ -2,11 +2,9 @@ pipeline {
     agent any
 
     environment {
-        // Name of the SonarQube server configured in Jenkins under:
-        // Manage Jenkins -> System -> SonarQube servers
+        // Name of the SonarQube server configured in Jenkins
         SONAR_SERVER = 'SonarQube'
-        // Name of the SonarQube Scanner tool configured under:
-        // Manage Jenkins -> Global Tool Configuration -> SonarQube Scanner
+        // Name of the SonarQube Scanner tool configured in Jenkins
         SONAR_SCANNER = 'SonarQubeScanner'
     }
 
@@ -18,14 +16,19 @@ pipeline {
             }
         }
 
-
         stage('SonarQube Analysis') {
-    steps {
-        withSonarQubeEnv("${SONAR_SERVER}") {
-            sh 'sonar-scanner'
+            steps {
+                script {
+                    // This loads the tool you configured in Global Tool Configuration
+                    def scannerHome = tool name: "${SONAR_SCANNER}"
+                    
+                    withSonarQubeEnv("${SONAR_SERVER}") {
+                        // Executes the scanner using the installed tool's path
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+            }
         }
-    }
-}
 
         stage('Build') {
             steps {
