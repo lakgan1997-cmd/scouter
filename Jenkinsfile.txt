@@ -34,8 +34,7 @@ pipeline {
                 -Dsonar.projectKey=scouter \
                 -Dsonar.projectName=scouter
             '''
-        }
-        
+        }  
     }
 }
     }
