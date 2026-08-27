@@ -16,11 +16,18 @@ pipeline {
                 sh 'mvn clean package -DskipTests'
             }
         }
+
+        stage('Test') {
+            steps {
+                echo 'Running Maven tests...'
+                sh 'mvn test'
+            }
+        }
     }
 
     post {
         success {
-            echo '✅ Checkout and Build completed successfully!'
+            echo '✅ Checkout, Build and Test completed successfully!'
         }
 
         failure {
